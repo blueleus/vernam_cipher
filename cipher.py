@@ -8,6 +8,10 @@ class InputError(Exception):
 
 
 def random_key(length):
+
+    if length is None:
+        raise InputError("The parameter 'length' is required")
+
     lower = string.ascii_lowercase
     upper = string.ascii_uppercase
     num = string.digits
@@ -22,7 +26,7 @@ def random_key(length):
     return key
 
 
-def repeat(string_to_repeat, length):
+def repeat(string_to_repeat: str, length: int):
     multiple = int(length / len(string_to_repeat) + 1)
     repeated_string = string_to_repeat * multiple
     return repeated_string[:length]
