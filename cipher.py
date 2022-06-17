@@ -29,24 +29,32 @@ def repeat(string_to_repeat, length):
 
 
 def algorithm(operation_type, file_name, key=None, verbose=False):
+    # Read and extract the contents of the file.
     with open(file_name, "r") as f:
         file_content = f.read()
 
+    # If the key is not passed, it is generated.
     if not key:
         key = random_key(len(file_content))
 
     if operation_type == "cipher":
 
+        # If the key does not have the same length as the file contents, then we adjust it.
         if len(key) != len(file_content):
             key = repeat(key, len(file_content))
 
+        # Pass key and file content to binary
         b_content = ''.join(format(ord(i), '08b') for i in file_content)
         b_key = ''.join(format(ord(i), '08b') for i in key)
 
+        # Do the XOR operation
         cipher = int(b_content, 2) ^ int(b_key, 2)
         b_cipher = "{0:b}".format(cipher).zfill(len(b_key))
 
+        # Convert all to decimal
         decimal_cipher = ' '.join(str(int(b_cipher[i:i + 8], 2)) for i in range(0, len(b_cipher), 8))
+
+        # Write the final file
         with open("result_cipher.txt", "w") as f:
             f.write(decimal_cipher)
 
@@ -60,18 +68,25 @@ def algorithm(operation_type, file_name, key=None, verbose=False):
 
     elif operation_type == "decipher":
         # Decipher
+
+        # Get file contents for decryption
         decimal_content = file_content.split(' ')
         b_cipher = ''.join(format(int(i), '08b') for i in decimal_content)
 
+        # If the key does not have the same length as the file contents, then we adjust it.
         if len(key) != len(decimal_content):
             key = repeat(key, len(decimal_content))
 
         b_key = ''.join(format(ord(i), '08b') for i in key)
 
+        # Do the XOR operation
         decipher = int(b_cipher, 2) ^ int(b_key, 2)
         b_decipher = "{0:b}".format(decipher).zfill(len(b_key))
+
+        # Convert all to ASCII
         decipher_content = "".join(chr(int(b_decipher[i:i + 8], 2)) for i in range(0, len(b_decipher), 8))
 
+        # Write the final file
         with open("result_decipher.txt", "w") as f:
             f.write(decipher_content)
 
