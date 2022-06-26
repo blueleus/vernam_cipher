@@ -1,6 +1,7 @@
 import random
 import string
 import sys
+import os
 
 
 class InputError(Exception):
@@ -8,7 +9,6 @@ class InputError(Exception):
 
 
 def random_key(length):
-
     if length is None:
         raise InputError("The parameter 'length' is required")
 
@@ -27,12 +27,24 @@ def random_key(length):
 
 
 def repeat(string_to_repeat: str, length: int):
+    if not isinstance(string_to_repeat, str):
+        string_to_repeat = str(string_to_repeat)
+
+    if not isinstance(length, int):
+        raise InputError("The length parameter must be an integer")
+
     multiple = int(length / len(string_to_repeat) + 1)
     repeated_string = string_to_repeat * multiple
     return repeated_string[:length]
 
 
-def algorithm(operation_type, file_name, key=None, verbose=False):
+def algorithm(file_name, operation_type="cipher", key=None, verbose=False):
+    if not file_name:
+        raise InputError("The file_name parameter is required")
+
+    if not file_name.endswith('.txt') or not os.path.exists(file_name):
+        raise ValueError("The file_name parameter must be a .txt file name")
+
     # Read and extract the contents of the file.
     with open(file_name, "r") as f:
         file_content = f.read()
@@ -126,7 +138,7 @@ def main():
         pos = tags.index("-o")
         operation_type = params[pos]
 
-    algorithm(operation_type, file_name, key, verbose)
+    algorithm(file_name, operation_type, key, verbose)
 
 
 if __name__ == "__main__":
